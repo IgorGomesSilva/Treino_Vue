@@ -27,6 +27,9 @@ export const store = new Vuex.Store ({
         error: null
     },
     mutations: {
+        setLoadedComputadores(state, dados){
+            state.loadPC = dados
+        },
         createPC (state, dados) {
             state.carregaPCs.push(dados)
         },
@@ -44,19 +47,51 @@ export const store = new Vuex.Store ({
         }
     },
     actions: {
+        loadPC ({commit}) {
+            commit('setLoading', true)
+            firebase.database().ref('computadores').once('value')
+             .then((data) => {
+                 const computadores = []
+                 const obj = data.val()
+                 for ( let key in obj) {
+                     computadores.push({
+                         id: key,
+                         nome: obj[key].nome,
+                         descricao: obj[key].descricao,
+                         imageUrl: obj[key].imageUrl,
+                         date: obj[key]
+
+                     })
+                 }
+                 commit('setLoadedComputadores', computadores)
+             })
+             .catch(
+                 (error) => {
+                     console.log(error)
+                     
+                 }
+             )
+        },
         createPC ({commit}, dados) {
             const computador = {
                 nome: dados.nome,
                 imageUrl: dados.imageUrl,
                 descricao: dados.descricao,
-                date: dados.date,
-                valor: dados.valor,
-                id: 'kdjkjds'
+                date: dados.date.toISOString(),
+                valor: dados.valor
             }
-            console.log('passei aqui')
-            
-            //Aqui vai store ou Firebase
-            commit('createPC', computador)
+            firebase.database().ref('computadores').push(computador)
+              .then((data) => {
+                  const key = data.key
+                  commit('createPC', {
+                      ...computador,
+                      id: key
+                  })
+              })
+              .catch((error) => {
+                  console.log(error)
+              })
+            //Aqui vai store ou Firebase           
         },
         CadastrarUser({commit}, dados) {
             commit ('setLoading', true)

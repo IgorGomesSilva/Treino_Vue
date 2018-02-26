@@ -30,5 +30,6 @@ new Vue({
       projectId: 'igorbd-3bb4f',
       storageBucket: 'igorbd-3bb4f.appspot.com'
     })
+    this.$store.dispatch('loadPC')
   }
 })
