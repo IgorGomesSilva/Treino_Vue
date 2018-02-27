@@ -28,7 +28,12 @@ new Vue({
       authDomain: 'igorbd-3bb4f.firebaseapp.com',
       databaseURL: 'https://igorbd-3bb4f.firebaseio.com',
       projectId: 'igorbd-3bb4f',
-      storageBucket: 'igorbd-3bb4f.appspot.com'
+      storageBucket: ''
+    })
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.$store.dispatch('autoLogin', user)
+      }
     })
     this.$store.dispatch('loadPC')
   }

@@ -7,6 +7,7 @@ import Perfil from '@/components/User/Perfil'
 import Login from '@/components/User/Login'
 import Cadastrar from '@/components/User/Cadastrar'
 import Computador from '@/components/Computador/Computador'
+import AuthGuard from './auth-guard'
 
 Vue.use(Router)
 
@@ -20,7 +21,8 @@ export default new Router({
     {
       path: '/computador/new',
       name: 'CreateComputador',
-      component: CreateComputador
+      component: CreateComputador,
+      beforeEnter: AuthGuard
     },
     {
       path: '/computadores',

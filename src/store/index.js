@@ -59,15 +59,17 @@ export const store = new Vuex.Store ({
                          nome: obj[key].nome,
                          descricao: obj[key].descricao,
                          imageUrl: obj[key].imageUrl,
-                         date: obj[key]
-
+                         date: obj[key],
+                         creatorId: obj[key].creatorId
                      })
                  }
                  commit('setLoadedComputadores', computadores)
+                 commit('setLoading', false)
              })
              .catch(
                  (error) => {
                      console.log(error)
+                     commit('setLoading', false)
                      
                  }
              )
@@ -78,7 +80,8 @@ export const store = new Vuex.Store ({
                 imageUrl: dados.imageUrl,
                 descricao: dados.descricao,
                 date: dados.date.toISOString(),
-                valor: dados.valor
+                valor: dados.valor,
+                creatorId: getters.user.id
             }
             firebase.database().ref('computadores').push(computador)
               .then((data) => {
@@ -139,8 +142,15 @@ export const store = new Vuex.Store ({
                  }
              )
         },
+        autoLogin ({commit}, dados) {
+            commit('setUser', {id: dados.uid, cadastrarPC: []})
+        },
         clearError ({commit}) {
-            commit('clearError')
+            commit('clearErro')
+        },
+        sair ({commit}) {
+            firebase.auth().signOut()
+            commit('setUser', null)
         }
     },
     getters: {
