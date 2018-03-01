@@ -74,22 +74,37 @@ export const store = new Vuex.Store ({
                  }
              )
         },
-        createPC ({commit}, dados) {
+        createPC ({commit, getters}, dados) {
             const computador = {
                 nome: dados.nome,
-                imageUrl: dados.imageUrl,
                 descricao: dados.descricao,
                 date: dados.date.toISOString(),
                 valor: dados.valor,
                 creatorId: getters.user.id
             }
+            let imageUrl
+            let key
             firebase.database().ref('computadores').push(computador)
               .then((data) => {
-                  const key = data.key
-                  commit('createPC', {
-                      ...computador,
-                      id: key
-                  })
+                  key = data.key
+                  return key
+              })
+              .then(key => {
+                  const filename = dados.image.name
+                  const ext = filename.slice(filename.lastIndexOf('.'))
+                  return firebase.storage().ref('computadores/' + key + '.' + ext).put(dados.image)
+
+              })
+              .then(fileData => {
+                imageUrl = fileData.metadata.downloadURLs[0]
+                return firebase.database().ref('computadores').child(key).update({imageUrl: imageUrl})
+              })
+              .then(() => {
+                commit('createPC', {
+                    ...computador,
+                    imageUrl: imageUrl,
+                    id: key
+                })
               })
               .catch((error) => {
                   console.log(error)
