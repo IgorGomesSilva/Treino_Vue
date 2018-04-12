@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer absolute v-model="sideNav">
+    <v-navigation-drawer temporary app v-model="sideNav">
       <v-list>
         <v-list-tile
           v-for="item in menuItems"
