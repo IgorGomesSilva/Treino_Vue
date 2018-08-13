@@ -22,19 +22,6 @@ new Vue({
   store,
   components: { App },
   template: '<App/>',
-  created () {
-    firebase.initializeApp({
-      apiKey: 'AIzaSyCcwAbhJoKJlN2CSd-r1Yu3eppQhtUZU2U',
-      authDomain: 'igorbd-3bb4f.firebaseapp.com',
-      databaseURL: 'https://igorbd-3bb4f.firebaseio.com',
-      projectId: 'igorbd-3bb4f',
-      storageBucket: 'gs://igorbd-3bb4f.appspot.com'
-    })
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.$store.dispatch('autoLogin', user)
-      }
-    })
-    this.$store.dispatch('loadPC')
+  this.$store.dispatch('loadPC')
   }
 })
